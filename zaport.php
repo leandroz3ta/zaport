@@ -49,6 +49,29 @@
 		return $result;
 	}
 	
+	//Get list of hosts online
+	function getOnlineHosts(){
+		$mountJsonData = array(
+		"jsonrpc" => "2.0", "method" => "host.get",
+				"params" => array(
+								"output" => array (
+													"hostid" => "hostid", 
+													"name" => "name", 
+													"error"=>"error", 
+													"status"=>"status"
+													),
+								"selectInterfaces" => array ("interfaceid" => "interfaceid", "ip" => "ip"),
+								"filter" => array (
+													"available" => "1"
+												)
+								),
+		"id" => $_SESSION["ID"], "auth" => $_SESSION["USER"]);
+		
+		$json_data_string = json_encode($mountJsonData);		
+		$result = setOpt($json_data_string, "GET");		
+		return $result;
+	}
+	
 	//Get list of hosts
 	function getHosts(){
 		
@@ -81,6 +104,26 @@
 	function getAlert($actionId){
 		$mountJsonData = array("jsonrpc" => "2.0", "method" => "alert.get", 
 							"params" => array("output" => "extend", "actionids" => $actionId),
+							"id" => $_SESSION["ID"], "auth" => $_SESSION["USER"]
+							);
+
+        $json_data_string = json_encode($mountJsonData);		
+		$result = setOpt($json_data_string, "GET");		
+		return $result;	
+	}
+	
+	//Get alerts from message
+	function getAlertMessage($message){
+		$mountJsonData = array("jsonrpc" => "2.0", "method" => "alert.get", 
+							"params" => array(
+												"output" => "extend", 
+												"search" => array(
+																 "message" => $message
+																 ),
+												"limit" => "1",
+												"sortfield" => "clock",
+												"sortorder" => "DESC"
+							),
 							"id" => $_SESSION["ID"], "auth" => $_SESSION["USER"]
 							);
 
